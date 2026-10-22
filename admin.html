@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marcomercios | Panel de Administración</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="admin-body">
+
+  <header class="header">
+    <div class="nav-container">
+      <a href="index.html" class="logo">MARCOMERCIOS<span>.ADMIN</span></a>
+      <button id="logout-btn" class="btn-primary" style="display: none; padding: 0.5rem 1rem;">Cerrar Sesión</button>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    <!-- Vista de Autenticación / Login -->
+    <section id="login-section" class="admin-card">
+      <h2>Acceso Administrativo</h2>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Ingresa tus credenciales para gestionar el catálogo.</p>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="admin-user">Usuario</label>
+          <input type="text" id="admin-user" required autocomplete="username" placeholder="admin">
+        </div>
+        <div class="form-group">
+          <label for="admin-password">Contraseña</label>
+          <input type="password" id="admin-password" required autocomplete="current-password" placeholder="••••••••">
+        </div>
+        <div id="login-error" class="error-msg"></div>
+        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">Ingresar al Panel</button>
+      </form>
+    </section>
+
+    <!-- Vista Dashboard CRUD (Oculta hasta iniciar sesión) -->
+    <section id="crud-section" class="admin-card crud-container" style="display: none;">
+      <h2>Gestión de Inventario</h2>
+      <div class="title-underline" style="margin-bottom: 2rem;"></div>
+
+      <!-- Formulario para Agregar/Editar Producto -->
+      <form id="product-form" class="product-form">
+        <input type="hidden" id="product-id">
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="p-sku">Código Único (SKU)</label>
+            <input type="text" id="p-sku" required placeholder="PER-001">
+          </div>
+          <div class="form-group">
+            <label for="p-name">Nombre del Producto</label>
+            <input type="text" id="p-name" required placeholder="Perfume Gold Oud 100ml">
+          </div>
+          <div class="form-group">
+            <label for="p-category">Categoría</label>
+            <select id="p-category" required>
+              <option value="Perfumería">Perfumería</option>
+              <option value="Oro">Oro Laminado</option>
+              <option value="Gorras">Gorras</option>
+              <option value="Ropa/Sport">Ropa / Sport</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="p-price">Precio ($ MXN)</label>
+            <input type="number" id="p-price" step="0.01" required placeholder="1250.00">
+          </div>
+          <div class="form-group">
+            <label for="p-image">URL de Imagen (Unsplash)</label>
+            <input type="url" id="p-image" required placeholder="https://images.unsplash.com/photo-...">
+          </div>
+          <div class="form-group">
+            <label for="p-status">Disponibilidad</label>
+            <select id="p-status" required>
+              <option value="Disponible">Disponible</option>
+              <option value="Agotado">Agotado</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+          <button type="submit" id="form-submit-btn" class="btn-primary">Guardar Producto</button>
+          <button type="button" id="cancel-edit-btn" class="btn-secondary" style="display: none;">Cancelar Edición</button>
+        </div>
+      </form>
+
+      <!-- Tabla de Productos -->
+      <h3 style="margin-top: 3rem; margin-bottom: 1rem;">Productos Registrados</h3>
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>SKU</th>
+              <th>Imagen</th>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="admin-table-body">
+            <!-- Renderizado por JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

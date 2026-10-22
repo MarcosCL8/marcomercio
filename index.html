@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -17,9 +17,14 @@
     <div class="nav-container">
       <a href="#" class="logo">MARCOMERCIOS<span>.</span></a>
       <nav class="nav-links">
+        <a href="#productos">Productos</a>
         <a href="#categorias">Categorías</a>
         <a href="#nosotros">Nosotros</a>
         <a href="#contacto">Contacto</a>
+        <!-- Botón del Carrito en el Menú -->
+        <button id="cart-toggle-btn" class="cart-trigger-btn">
+          🛒 Carrito (<span id="cart-counter">0</span>)
+        </button>
       </nav>
     </div>
   </header>
@@ -30,11 +35,31 @@
       <span class="badge">Colección Exclusiva</span>
       <h1>ELEVA TU ESTILO AL SIGUIENTE NIVEL</h1>
       <p>Perfumería fina, accesorios en oro laminado, gorras urbanas y ropa deportiva diseñada para destacar.</p>
-      <a href="#categorias" class="btn-primary">Explorar Catálogo</a>
+      <a href="#productos" class="btn-primary">Explorar Catálogo</a>
     </div>
   </section>
 
-  <!-- Sección de Categorías -->
+  <!-- Sección de Productos Dinámicos (Catálogo Interactivo) -->
+  <section id="productos" class="categories-section">
+    <h2 class="section-title">CATÁLOGO DE PRODUCTOS</h2>
+    <div class="title-underline"></div>
+    
+    <!-- Filtros por Categoría -->
+    <div class="category-filters">
+      <button class="filter-btn active" data-category="all">Todos</button>
+      <button class="filter-btn" data-category="Perfumería">Perfumería</button>
+      <button class="filter-btn" data-category="Oro">Oro Laminado</button>
+      <button class="filter-btn" data-category="Gorras">Gorras</button>
+      <button class="filter-btn" data-category="Ropa/Sport">Ropa / Sport</button>
+    </div>
+
+    <!-- Grid donde se renderizan los productos de LocalStorage -->
+    <div id="products-grid" class="grid-categories">
+      <!-- Se carga dinámicamente desde js/cart.js -->
+    </div>
+  </section>
+
+  <!-- Sección de Categorías Original -->
   <section id="categorias" class="categories-section">
     <h2 class="section-title">NUESTRAS CATEGORÍAS</h2>
     <div class="title-underline"></div>
@@ -111,6 +136,28 @@
     </div>
   </footer>
 
+  <!-- Drawer / Modal del Carrito de Compras -->
+  <div id="cart-modal" class="cart-modal">
+    <div class="cart-modal-content">
+      <div class="cart-modal-header">
+        <h3>Tu Carrito de Compras</h3>
+        <button id="close-cart-btn" class="close-cart">&times;</button>
+      </div>
+      <div id="cart-items-container" class="cart-items-body">
+        <!-- Elementos del carrito cargados por JS -->
+      </div>
+      <div class="cart-modal-footer">
+        <div class="cart-total-box">
+          <span>Total:</span>
+          <span id="cart-total-price">$0.00 MXN</span>
+        </div>
+        <button id="checkout-whatsapp-btn" class="btn-whatsapp-checkout">
+          Pedir por WhatsApp 💬
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Botón Flotante de WhatsApp -->
   <a href="https://wa.me/523411057485?text=Hola%20Marcomercios,%20me%20gustar%C3%ADa%20recibir%20m%C3%A1s%20informaci%C3%B3n" class="whatsapp-btn" target="_blank" aria-label="Contacto por WhatsApp">
     <svg viewBox="0 0 32 32" class="whatsapp-icon">
@@ -119,5 +166,7 @@
     <span>Contáctanos</span>
   </a>
 
+  <!-- Script del Carrito -->
+  <script src="js/cart.js"></script>
 </body>
 </html>
