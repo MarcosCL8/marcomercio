@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Marcomercios | Estilo, Elegancia y Exclusividad</title>
-  <!-- Google Fonts para tipografía elegante y moderna -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@
         <a href="#categorias">Categorías</a>
         <a href="#nosotros">Nosotros</a>
         <a href="#contacto">Contacto</a>
-        <!-- Botón del Carrito en el Menú -->
+        <!-- Botón del Carrito -->
         <button id="cart-toggle-btn" class="cart-trigger-btn">
           🛒 Carrito (<span id="cart-counter">0</span>)
         </button>
@@ -29,7 +29,7 @@
     </div>
   </header>
 
-  <!-- Hero Section / Encabezado principal -->
+  <!-- Hero Section -->
   <section class="hero">
     <div class="hero-content">
       <span class="badge">Colección Exclusiva</span>
@@ -39,12 +39,62 @@
     </div>
   </section>
 
-  <!-- Sección de Productos Dinámicos (Catálogo Interactivo) -->
-  <section id="productos" class="categories-section">
-    <h2 class="section-title">CATÁLOGO DE PRODUCTOS</h2>
+  <!-- Sección de Categorías Visuales (Interactivas) -->
+  <section id="categorias" class="categories-section">
+    <h2 class="section-title">NUESTRAS CATEGORÍAS</h2>
+    <div class="title-underline"></div>
+
+    <div class="grid-categories">
+      <!-- Categoría 1: Perfumería -->
+      <div class="card category-card" data-category="Perfumería">
+        <div class="card-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=600&q=80');"></div>
+        <div class="card-content">
+          <h3>Perfumería</h3>
+          <p>Fragancias exclusivas que dejan huella a donde vayas.</p>
+          <span class="card-link">Ver colección &rarr;</span>
+        </div>
+      </div>
+
+      <!-- Categoría 2: Oro Laminado -->
+      <div class="card category-card" data-category="Oro">
+        <div class="card-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=600&q=80');"></div>
+        <div class="card-content">
+          <h3>Oro Laminado</h3>
+          <p>Piezas con acabados impecables, brillo duradero y máxima distinción.</p>
+          <span class="card-link">Ver colección &rarr;</span>
+        </div>
+      </div>
+
+      <!-- Categoría 3: Gorras -->
+      <div class="card category-card" data-category="Gorras">
+        <div class="card-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=600&q=80');"></div>
+        <div class="card-content">
+          <h3>Gorras Premium</h3>
+          <img src="1g.webp
+          " alt=">
+          <p>Estilo urbano y ajuste perfecto para marcar tu presencia diaria.</p>
+          <span class="card-link">Ver colección &rarr;</span>
+        </div>
+      </div>
+
+      <!-- Categoría 4: Ropa / Sport -->
+      <div class="card category-card" data-category="Ropa/Sport">
+        <div class="card-img-placeholder" style="background-image: url('https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&q=80');"></div>
+        <div class="card-content">
+          <h3>Ropa Deportiva</h3>
+          <p>Rendimiento, comodidad y diseño de alto nivel para tu entrenamiento.</p>
+          <span class="card-link">Ver colección &rarr;</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección de Productos Dinámicos (Catálogo Completo y Filtrable) -->
+  <section id="productos" class="categories-section" style="background-color: #12141a;">
+    <h2 class="section-title">CATÁLOGO GENERAL</h2>
     <div class="title-underline"></div>
     
-    <!-- Filtros por Categoría -->
+    <!-- Botones de Filtro -->
     <div class="category-filters">
       <button class="filter-btn active" data-category="all">Todos</button>
       <button class="filter-btn" data-category="Perfumería">Perfumería</button>
@@ -53,58 +103,8 @@
       <button class="filter-btn" data-category="Ropa/Sport">Ropa / Sport</button>
     </div>
 
-    <!-- Grid donde se renderizan los productos de LocalStorage -->
-    <div id="products-grid" class="grid-categories">
-      <!-- Se carga dinámicamente desde js/cart.js -->
-    </div>
-  </section>
-
-  <!-- Sección de Categorías Original -->
-  <section id="categorias" class="categories-section">
-    <h2 class="section-title">NUESTRAS CATEGORÍAS</h2>
-    <div class="title-underline"></div>
-
-    <div class="grid-categories">
-      <!-- Tarjeta 1 -->
-      <div class="card">
-        <div class="card-img-placeholder perfume-bg"></div>
-        <div class="card-content">
-          <h3>Perfumería</h3>
-          <p>Fragancias exclusivas que dejan huella a donde vaya que vayas.</p>
-          <a href="https://wa.me/523411057485?text=Hola,%20me%20interesan%20los%20perfumes" target="_blank" class="card-link">Ver catálogo &rarr;</a>
-        </div>
-      </div>
-
-      <!-- Tarjeta 2 -->
-      <div class="card">
-        <div class="card-img-placeholder oro-bg"></div>
-        <div class="card-content">
-          <h3>Oro Laminado</h3>
-          <p>Piezas con acabados impecables, brillo duradero y máxima distinción.</p>
-          <a href="https://wa.me/523411057485?text=Hola,%20me%20interesa%20el%20oro%20laminado" target="_blank" class="card-link">Ver catálogo &rarr;</a>
-        </div>
-      </div>
-
-      <!-- Tarjeta 3 -->
-      <div class="card">
-        <div class="card-img-placeholder gorras-bg"></div>
-        <div class="card-content">
-          <h3>Gorras Premium</h3>
-          <p>Estilo urbano y ajuste perfecto para marcar tu presencia diaria.</p>
-          <a href="https://wa.me/523411057485?text=Hola,%20me%20interesan%20las%20gorras" target="_blank" class="card-link">Ver catálogo &rarr;</a>
-        </div>
-      </div>
-
-      <!-- Tarjeta 4 -->
-      <div class="card">
-        <div class="card-img-placeholder sport-bg"></div>
-        <div class="card-content">
-          <h3>Ropa Deportiva</h3>
-          <p>Rendimiento, comodidad y diseño de alto nivel para tu entrenamiento.</p>
-          <a href="https://wa.me/523411057485?text=Hola,%20me%20interesa%20la%20ropa%20deportiva" target="_blank" class="card-link">Ver catálogo &rarr;</a>
-        </div>
-      </div>
-    </div>
+    <!-- Grid de Productos (Renderizado por js/cart.js) -->
+    <div id="products-grid" class="grid-categories"></div>
   </section>
 
   <!-- Sección de Confianza -->
@@ -136,16 +136,14 @@
     </div>
   </footer>
 
-  <!-- Drawer / Modal del Carrito de Compras -->
+  <!-- Modal del Carrito -->
   <div id="cart-modal" class="cart-modal">
     <div class="cart-modal-content">
       <div class="cart-modal-header">
         <h3>Tu Carrito de Compras</h3>
         <button id="close-cart-btn" class="close-cart">&times;</button>
       </div>
-      <div id="cart-items-container" class="cart-items-body">
-        <!-- Elementos del carrito cargados por JS -->
-      </div>
+      <div id="cart-items-container" class="cart-items-body"></div>
       <div class="cart-modal-footer">
         <div class="cart-total-box">
           <span>Total:</span>
@@ -166,7 +164,7 @@
     <span>Contáctanos</span>
   </a>
 
-  <!-- Script del Carrito -->
   <script src="js/cart.js"></script>
 </body>
 </html>
+

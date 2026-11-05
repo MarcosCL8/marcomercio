@@ -1,11 +1,11 @@
 /**
  * js/cart.js
- * Cerebro del Carrito de Compras y Renderizado de Productos en Marcomercios
+ * Cerebro del Carrito de Compras, Catálogo Dinámico y Filtros por Categoría
  */
 
 const WHATSAPP_NUMBER = "523411057485";
 
-// Datos Iniciales de Prueba (Semilla en caso de estar vacío el almacenamiento)
+// Datos de productos con imágenes reales de Unsplash de alta calidad
 const INITIAL_PRODUCTS = [
   {
     id: "PER-001",
@@ -13,7 +13,16 @@ const INITIAL_PRODUCTS = [
     name: "Perfume Black Platinum 100ml",
     category: "Perfumería",
     price: 1350.00,
-    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80",
+    image: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=600&q=80",
+    status: "Disponible"
+  },
+  {
+    id: "PER-002",
+    sku: "PER-002",
+    name: "Fragancia Sauvage Intense",
+    category: "Perfumería",
+    price: 1590.00,
+    image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=600&q=80",
     status: "Disponible"
   },
   {
@@ -26,6 +35,15 @@ const INITIAL_PRODUCTS = [
     status: "Disponible"
   },
   {
+    id: "ORO-002",
+    sku: "ORO-002",
+    name: "Esclava Grumet 10mm Oro Laminado",
+    category: "Oro",
+    price: 1120.00,
+    image: "https://images.unsplash.com/photo-1611591475225-83e9b04f7572?auto=format&fit=crop&w=600&q=80",
+    status: "Disponible"
+  },
+  {
     id: "GOR-001",
     sku: "GOR-001",
     name: "Gorra Snapback Urban Legend",
@@ -35,6 +53,15 @@ const INITIAL_PRODUCTS = [
     status: "Agotado"
   },
   {
+    id: "GOR-002",
+    sku: "GOR-002",
+    name: "Gorra Deportiva Minimal Black",
+    category: "Gorras",
+    price: 390.00,
+    image: "https://images.unsplash.com/photo-1534030347209-467a5b0ad3e6?auto=format&fit=crop&w=600&q=80",
+    status: "Disponible"
+  },
+  {
     id: "SPO-001",
     sku: "SPO-001",
     name: "Playera Dry-Fit Stealth Black",
@@ -42,10 +69,18 @@ const INITIAL_PRODUCTS = [
     price: 380.00,
     image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80",
     status: "Disponible"
+  },
+  {
+    id: "SPO-002",
+    sku: "SPO-002",
+    name: "Short Deportivo Running Pro",
+    category: "Ropa/Sport",
+    price: 420.00,
+    image: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&q=80",
+    status: "Disponible"
   }
 ];
 
-// Estado global de la aplicación
 let products = [];
 let cart = [];
 
@@ -59,8 +94,8 @@ const cartTotalPrice = document.getElementById('cart-total-price');
 const cartCounter = document.getElementById('cart-counter');
 const checkoutWhatsappBtn = document.getElementById('checkout-whatsapp-btn');
 const filterBtns = document.querySelectorAll('.filter-btn');
+const categoryCards = document.querySelectorAll('.category-card');
 
-// Inicialización de la aplicación
 document.addEventListener('DOMContentLoaded', () => {
   loadProducts();
   loadCartFromStorage();
@@ -69,7 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
   setupEventListeners();
 });
 
-// Cargar productos de LocalStorage o inicializar
 function loadProducts() {
   const stored = localStorage.getItem('marcomercios_products');
   if (stored) {
@@ -80,7 +114,6 @@ function loadProducts() {
   }
 }
 
-// Renderizar productos en la grilla del catálogo
 function renderProducts(categoryFilter = 'all') {
   if (!productsGrid) return;
   productsGrid.innerHTML = '';
@@ -90,7 +123,7 @@ function renderProducts(categoryFilter = 'all') {
     : products.filter(p => p.category === categoryFilter);
 
   if (filtered.length === 0) {
-    productsGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">No hay productos en esta categoría.</p>`;
+    productsGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem 0;">No hay productos disponibles en esta categoría por el momento.</p>`;
     return;
   }
 
@@ -124,9 +157,8 @@ function renderProducts(categoryFilter = 'all') {
   });
 }
 
-// Escuchadores de eventos
 function setupEventListeners() {
-  // Filtros de categoría
+  // Filtros de botones tradicionales
   filterBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
       filterBtns.forEach(b => b.classList.remove('active'));
@@ -135,7 +167,27 @@ function setupEventListeners() {
     });
   });
 
-  // Agregar al carrito (Event Delegation)
+  // Clic en las tarjetas visuales de categorías superiores
+  categoryCards.forEach(card => {
+    card.addEventListener('click', () => {
+      const selectedCat = card.dataset.category;
+      
+      // Sincronizar botones de filtro
+      filterBtns.forEach(b => {
+        if (b.dataset.category === selectedCat) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
+      });
+
+      // Renderizar y hacer scroll suave hacia la sección del catálogo
+      renderProducts(selectedCat);
+      document.getElementById('productos').scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Agregar al carrito
   if (productsGrid) {
     productsGrid.addEventListener('click', (e) => {
       if (e.target.classList.contains('add-to-cart-btn')) {
@@ -145,16 +197,11 @@ function setupEventListeners() {
     });
   }
 
-  // Controles Modal Carrito
   if (cartToggleBtn) cartToggleBtn.addEventListener('click', () => cartModal.classList.add('open'));
   if (closeCartBtn) closeCartBtn.addEventListener('click', () => cartModal.classList.remove('open'));
-  
-  if (checkoutWhatsappBtn) {
-    checkoutWhatsappBtn.addEventListener('click', processWhatsappOrder);
-  }
+  if (checkoutWhatsappBtn) checkoutWhatsappBtn.addEventListener('click', processWhatsappOrder);
 }
 
-// Agregar producto al carrito
 function addToCart(sku) {
   const product = products.find(p => p.sku === sku);
   if (!product || product.status !== 'Disponible') return;
@@ -171,8 +218,7 @@ function addToCart(sku) {
   cartModal.classList.add('open');
 }
 
-// Modificar cantidad en carrito
-function changeQuantity(sku, delta) {
+window.changeQuantity = function(sku, delta) {
   const item = cart.find(i => i.sku === sku);
   if (!item) return;
 
@@ -185,7 +231,6 @@ function changeQuantity(sku, delta) {
   updateCartUI();
 }
 
-// Actualizar interfaz del carrito
 function updateCartUI() {
   if (!cartItemsContainer) return;
   cartItemsContainer.innerHTML = '';
@@ -224,7 +269,6 @@ function updateCartUI() {
   cartCounter.textContent = count;
 }
 
-// Persistencia del Carrito
 function saveCartToStorage() {
   localStorage.setItem('marcomercios_cart', JSON.stringify(cart));
 }
@@ -234,7 +278,6 @@ function loadCartFromStorage() {
   if (stored) cart = JSON.parse(stored);
 }
 
-// Generación del mensaje inteligente a WhatsApp
 function processWhatsappOrder() {
   if (cart.length === 0) {
     alert("Agrega productos al carrito antes de realizar el pedido.");
