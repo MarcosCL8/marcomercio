@@ -88,18 +88,23 @@ body {
    HERO SECTION
    ========================================== */
 .hero {
-  min-height: 75vh;
+  min-height: 80vh;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
   padding: 4rem 2rem;
-  background: linear-gradient(180deg, rgba(13, 14, 18, 0.5) 0%, var(--bg-main) 100%),
-              radial-gradient(circle at center, #1f2430 0%, #0d0e12 70%);
+  position: relative;
+  overflow: hidden;
+  /* Imagen de fondo elegante con un filtro oscuro encima para que el texto resalte */
+  background: linear-gradient(rgba(13, 14, 18, 0.8), rgba(13, 14, 18, 0.85)), 
+              url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1600&auto=format&fit=crop') no-repeat center center/cover;
 }
 
 .hero-content {
-  max-width: 800px;
+  max-width: 900px;
+  width: 100%;
+  z-index: 2;
 }
 
 .badge {
@@ -125,7 +130,7 @@ body {
 .hero p {
   font-size: 1.15rem;
   color: var(--text-muted);
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 }
 
 .btn-primary {
@@ -141,6 +146,7 @@ body {
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
+  margin-bottom: 2.5rem;
 }
 
 .btn-primary:hover {
@@ -149,6 +155,43 @@ body {
   box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
 }
 
+/* ==========================================
+   BARRA DESLIZANTE (TICKER / MARQUEE)
+   ========================================== */
+.ticker-container {
+  width: 100%;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.03);
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  padding: 0.8rem 0;
+  white-space: nowrap;
+  margin-top: 1rem;
+}
+
+.ticker-track {
+  display: inline-block;
+  white-space: nowrap;
+  animation: scrollTicker 22s linear infinite;
+}
+
+.ticker-track span {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+
+/* Animación de movimiento hacia la derecha */
+@keyframes scrollTicker {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
 /* ==========================================
    CATEGORÍAS Y PRODUCTOS
    ========================================== */
