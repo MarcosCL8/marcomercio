@@ -46,7 +46,7 @@ const INITIAL_PRODUCTS = [
   {
     id: "GOR-001",
     sku: "GOR-001",
-    name: "Gorra Snapback Urban Legend",
+    name: "Gorra Snapback Classic",     
     category: "Gorras",
     price: 450.00,
     image: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=600&q=80",
