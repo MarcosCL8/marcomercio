@@ -29,7 +29,7 @@ const INITIAL_PRODUCTS = [
     id: "ORO-001",
     sku: "ORO-001",
     name: "Cadena Tejido Chino 14k Oro Laminado",
-    category: "Oro",
+    category: "Oro Laminado",
     price: 890.00,
     image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=600&q=80",
     status: "Disponible"
@@ -50,7 +50,8 @@ const INITIAL_PRODUCTS = [
     category: "Gorras",
     price: 450.00,
     image: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=600&q=80",
-    status: "Agotado"
+    status: "Disponible"
+
   },
   {
     id: "GOR-002",
