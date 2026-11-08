@@ -38,7 +38,7 @@ const INITIAL_PRODUCTS = [
     id: "ORO-002",
     sku: "ORO-002",
     name: "Esclava Grumet 10mm Oro Laminado",
-    category: "Oro laminado",
+    category: "Oro Laminado",
     price: 1120.00,
     image: "https://images.unsplash.com/photo-1611591475225-83e9b04f7572?auto=format&fit=crop&w=600&q=80",
     status: "Disponible"
@@ -46,13 +46,12 @@ const INITIAL_PRODUCTS = [
   {
     id: "GOR-001",
     sku: "GOR-001",
-    name: "Gorra Snapback Classic",     
+    name: "Gorra Snapback Classic",
     category: "Gorras",
     price: 450.00,
-    image: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=600&q=80",
+    image: "img/1g.webp",
     status: "Disponible"
-
-  },
+},
   {
     id: "GOR-002",
     sku: "GOR-002",
@@ -84,6 +83,7 @@ const INITIAL_PRODUCTS = [
 
 let products = [];
 let cart = [];
+let activeCategoryFilter = 'all';
 
 // Elementos del DOM
 const productsGrid = document.getElementById('products-grid');
@@ -105,6 +105,21 @@ document.addEventListener('DOMContentLoaded', () => {
   setupEventListeners();
 });
 
+window.addEventListener('storage', (event) => {
+  if (event.key !== 'marcomercios_products') return;
+
+  loadProducts();
+  renderProducts(activeCategoryFilter);
+  cart = cart
+    .map(item => {
+      const currentProduct = products.find(product => product.sku === item.sku);
+      return currentProduct ? { ...currentProduct, quantity: item.quantity } : null;
+    })
+    .filter(Boolean);
+  saveCartToStorage();
+  updateCartUI();
+});
+
 function loadProducts() {
   const stored = localStorage.getItem('marcomercios_products');
   if (stored) {
@@ -117,6 +132,7 @@ function loadProducts() {
 
 function renderProducts(categoryFilter = 'all') {
   if (!productsGrid) return;
+  activeCategoryFilter = categoryFilter;
   productsGrid.innerHTML = '';
 
   const filtered = categoryFilter === 'all' 
