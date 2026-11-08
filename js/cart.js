@@ -38,7 +38,7 @@ const INITIAL_PRODUCTS = [
     id: "ORO-002",
     sku: "ORO-002",
     name: "Esclava Grumet 10mm Oro Laminado",
-    category: "Oro",
+    category: "Oro laminado",
     price: 1120.00,
     image: "https://images.unsplash.com/photo-1611591475225-83e9b04f7572?auto=format&fit=crop&w=600&q=80",
     status: "Disponible"
