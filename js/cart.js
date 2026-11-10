@@ -3,83 +3,9 @@
  * Cerebro del Carrito de Compras, Catálogo Dinámico y Filtros por Categoría
  */
 
-const WHATSAPP_NUMBER = "523411057485";
+import { supabase } from './supabase.js';
 
-// Datos de productos con imágenes reales de Unsplash de alta calidad
-const INITIAL_PRODUCTS = [
-  {
-    id: "PER-001",
-    sku: "PER-001",
-    name: "Perfume Black Platinum 100ml",
-    category: "Perfumería",
-    price: 1350.00,
-    image: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=600&q=80",
-    status: "Disponible"
-  },
-  {
-    id: "PER-002",
-    sku: "PER-002",
-    name: "Fragancia Sauvage Intense",
-    category: "Perfumería",
-    price: 1590.00,
-    image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=600&q=80",
-    status: "Disponible"
-  },
-  {
-    id: "ORO-001",
-    sku: "ORO-001",
-    name: "Cadena Tejido Chino 14k Oro Laminado",
-    category: "Oro Laminado",
-    price: 890.00,
-    image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=600&q=80",
-    status: "Disponible"
-  },
-  {
-    id: "ORO-002",
-    sku: "ORO-002",
-    name: "Esclava Grumet 10mm Oro Laminado",
-    category: "Oro Laminado",
-    price: 1120.00,
-    image: "https://images.unsplash.com/photo-1611591475225-83e9b04f7572?auto=format&fit=crop&w=600&q=80",
-    status: "Disponible"
-  },
-  {
-    id: "GOR-001",
-    sku: "GOR-001",
-    name: "Gorra Snapback Classic",
-    category: "Gorras",
-    price: 450.00,
-    image: "img/1g.webp",
-    status: "Disponible"
-},
-  {
-    id: "GOR-002",
-    sku: "GOR-002",
-    name: "Gorra Deportiva Minimal Black",
-    category: "Gorras",
-    price: 390.00,
-    image: "https://images.unsplash.com/photo-1534030347209-467a5b0ad3e6?auto=format&fit=crop&w=600&q=80",
-    status: "Disponible"
-  },
-  {
-    id: "SPO-001",
-    sku: "SPO-001",
-    name: "Playera Dry-Fit Stealth Black",
-    category: "Ropa/Sport",
-    price: 380.00,
-    image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80",
-    status: "Disponible"
-  },
-  {
-    id: "SPO-002",
-    sku: "SPO-002",
-    name: "Short Deportivo Running Pro",
-    category: "Ropa/Sport",
-    price: 420.00,
-    image: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&q=80",
-    status: "Disponible"
-  }
-];
+const WHATSAPP_NUMBER = "523411057485";
 
 let products = [];
 let cart = [];
@@ -97,37 +23,42 @@ const checkoutWhatsappBtn = document.getElementById('checkout-whatsapp-btn');
 const filterBtns = document.querySelectorAll('.filter-btn');
 const categoryCards = document.querySelectorAll('.category-card');
 
-document.addEventListener('DOMContentLoaded', () => {
-  loadProducts();
-  loadCartFromStorage();
-  renderProducts('all');
-  updateCartUI();
+document.addEventListener('DOMContentLoaded', async () => {
   setupEventListeners();
-});
+  loadCartFromStorage();
 
-window.addEventListener('storage', (event) => {
-  if (event.key !== 'marcomercios_products') return;
-
-  loadProducts();
-  renderProducts(activeCategoryFilter);
-  cart = cart
-    .map(item => {
-      const currentProduct = products.find(product => product.sku === item.sku);
-      return currentProduct ? { ...currentProduct, quantity: item.quantity } : null;
-    })
-    .filter(Boolean);
-  saveCartToStorage();
-  updateCartUI();
-});
-
-function loadProducts() {
-  const stored = localStorage.getItem('marcomercios_products');
-  if (stored) {
-    products = JSON.parse(stored);
-  } else {
-    products = INITIAL_PRODUCTS;
-    localStorage.setItem('marcomercios_products', JSON.stringify(products));
+  try {
+    await loadProducts();
+    cart = cart
+      .map(item => {
+        const currentProduct = products.find(product => product.sku === item.sku);
+        return currentProduct ? { ...currentProduct, quantity: item.quantity } : null;
+      })
+      .filter(Boolean);
+    saveCartToStorage();
+    renderProducts('all');
+    updateCartUI();
+  } catch (error) {
+    showCatalogError(`No se pudo cargar el catálogo: ${error.message}`);
   }
+});
+
+async function loadProducts() {
+  const { data, error } = await supabase
+    .from('products')
+    .select('id, sku, name, category, price, image, status')
+    .order('created_at', { ascending: true });
+
+  if (error) throw error;
+  products = data;
+}
+
+function showCatalogError(message) {
+  if (!productsGrid) return;
+  const notice = document.createElement('p');
+  notice.style.cssText = 'grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem 0;';
+  notice.textContent = message;
+  productsGrid.replaceChildren(notice);
 }
 
 function renderProducts(categoryFilter = 'all') {
@@ -140,7 +71,10 @@ function renderProducts(categoryFilter = 'all') {
     : products.filter(p => p.category === categoryFilter);
 
   if (filtered.length === 0) {
-    productsGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem 0;">No hay productos disponibles en esta categoría por el momento.</p>`;
+    const notice = document.createElement('p');
+    notice.style.cssText = 'grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem 0;';
+    notice.textContent = 'No hay productos disponibles en esta categoría por el momento.';
+    productsGrid.appendChild(notice);
     return;
   }
 
@@ -149,27 +83,41 @@ function renderProducts(categoryFilter = 'all') {
     const card = document.createElement('div');
     card.className = 'card';
 
-    card.innerHTML = `
-      <div class="card-img-placeholder" style="background-image: url('${product.image}'); background-size: cover;"></div>
-      <div class="card-content">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-          <span class="stock-badge ${isAvailable ? 'disponible' : 'agotado'}">${product.status}</span>
-          <small style="color: var(--text-muted); font-size: 0.75rem;">SKU: ${product.sku}</small>
-        </div>
-        <h3>${product.name}</h3>
-        <p style="color: var(--accent-gold); font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem;">
-          $${Number(product.price).toFixed(2)} MXN
-        </p>
-        <button 
-          class="btn-primary add-to-cart-btn" 
-          style="width: 100%; padding: 0.6rem;" 
-          data-sku="${product.sku}" 
-          ${!isAvailable ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
-          ${isAvailable ? 'Añadir al Carrito' : 'Agotado'}
-        </button>
-      </div>
-    `;
+    const imageContainer = document.createElement('div');
+    const image = document.createElement('img');
+    const content = document.createElement('div');
+    const details = document.createElement('div');
+    const status = document.createElement('span');
+    const sku = document.createElement('small');
+    const name = document.createElement('h3');
+    const price = document.createElement('p');
+    const addButton = document.createElement('button');
 
+    imageContainer.className = 'card-img-placeholder';
+    image.src = product.image;
+    image.alt = product.name;
+    image.style.cssText = 'width: 100%; height: 100%; object-fit: cover;';
+    content.className = 'card-content';
+    details.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;';
+    status.className = `stock-badge ${isAvailable ? 'disponible' : 'agotado'}`;
+    status.textContent = product.status;
+    sku.style.cssText = 'color: var(--text-muted); font-size: 0.75rem;';
+    sku.textContent = `SKU: ${product.sku}`;
+    name.textContent = product.name;
+    price.style.cssText = 'color: var(--accent-gold); font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem;';
+    price.textContent = `$${Number(product.price).toFixed(2)} MXN`;
+    addButton.type = 'button';
+    addButton.className = 'btn-primary add-to-cart-btn';
+    addButton.style.cssText = 'width: 100%; padding: 0.6rem;';
+    addButton.dataset.sku = product.sku;
+    addButton.disabled = !isAvailable;
+    if (!isAvailable) addButton.style.cssText += 'opacity: 0.5; cursor: not-allowed;';
+    addButton.textContent = isAvailable ? 'Añadir al Carrito' : 'Agotado';
+
+    details.append(status, sku);
+    content.append(details, name, price, addButton);
+    imageContainer.appendChild(image);
+    card.append(imageContainer, content);
     productsGrid.appendChild(card);
   });
 }
@@ -207,8 +155,9 @@ function setupEventListeners() {
   // Agregar al carrito
   if (productsGrid) {
     productsGrid.addEventListener('click', (e) => {
-      if (e.target.classList.contains('add-to-cart-btn')) {
-        const sku = e.target.dataset.sku;
+      const button = e.target.closest('.add-to-cart-btn');
+      if (button) {
+        const sku = button.dataset.sku;
         addToCart(sku);
       }
     });
@@ -256,7 +205,10 @@ function updateCartUI() {
   let count = 0;
 
   if (cart.length === 0) {
-    cartItemsContainer.innerHTML = `<p style="text-align: center; color: var(--text-muted); margin-top: 2rem;">Tu carrito está vacío.</p>`;
+    const emptyMessage = document.createElement('p');
+    emptyMessage.style.cssText = 'text-align: center; color: var(--text-muted); margin-top: 2rem;';
+    emptyMessage.textContent = 'Tu carrito está vacío.';
+    cartItemsContainer.appendChild(emptyMessage);
   } else {
     cart.forEach(item => {
       const itemTotal = item.price * item.quantity;
@@ -265,21 +217,38 @@ function updateCartUI() {
 
       const itemEl = document.createElement('div');
       itemEl.className = 'cart-item';
-      itemEl.innerHTML = `
-        <img src="${item.image}" alt="${item.name}">
-        <div class="cart-item-details">
-          <h4>${item.name}</h4>
-          <p>$${Number(item.price).toFixed(2)} MXN</p>
-          <div class="cart-item-qty">
-            <button class="qty-btn" onclick="changeQuantity('${item.sku}', -1)">-</button>
-            <span>${item.quantity}</span>
-            <button class="qty-btn" onclick="changeQuantity('${item.sku}', 1)">+</button>
-          </div>
-        </div>
-        <button style="background:none; border:none; color: #ff4d4d; cursor:pointer;" onclick="changeQuantity('${item.sku}', -${item.quantity})">🗑️</button>
-      `;
+      const image = document.createElement('img');
+      const details = document.createElement('div');
+      const name = document.createElement('h4');
+      const price = document.createElement('p');
+      const quantityControls = document.createElement('div');
+      const decreaseButton = createQuantityButton(item.sku, -1, '-');
+      const quantity = document.createElement('span');
+      const increaseButton = createQuantityButton(item.sku, 1, '+');
+      const removeButton = createQuantityButton(item.sku, -item.quantity, '🗑️');
+
+      image.src = item.image;
+      image.alt = item.name;
+      details.className = 'cart-item-details';
+      name.textContent = item.name;
+      price.textContent = `$${Number(item.price).toFixed(2)} MXN`;
+      quantityControls.className = 'cart-item-qty';
+      quantity.textContent = item.quantity;
+      removeButton.style.cssText = 'background:none; border:none; color: #ff4d4d; cursor:pointer;';
+      quantityControls.append(decreaseButton, quantity, increaseButton);
+      details.append(name, price, quantityControls);
+      itemEl.append(image, details, removeButton);
       cartItemsContainer.appendChild(itemEl);
     });
+  }
+
+  function createQuantityButton(sku, delta, label) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'qty-btn';
+    button.textContent = label;
+    button.addEventListener('click', () => changeQuantity(sku, delta));
+    return button;
   }
 
   cartTotalPrice.textContent = `$${total.toFixed(2)} MXN`;

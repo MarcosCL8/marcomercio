@@ -25,8 +25,8 @@
       <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Ingresa tus credenciales para gestionar el catálogo.</p>
       <form id="login-form">
         <div class="form-group">
-          <label for="admin-user">Usuario</label>
-          <input type="text" id="admin-user" required autocomplete="username" placeholder="admin">
+          <label for="admin-user">Correo electrónico</label>
+          <input type="email" id="admin-user" required autocomplete="username" placeholder="tu-correo@ejemplo.com">
         </div>
         <div class="form-group">
           <label for="admin-password">Contraseña</label>
@@ -40,6 +40,7 @@
     <!-- Vista Dashboard CRUD (Oculta hasta iniciar sesión) -->
     <section id="crud-section" class="admin-card crud-container" style="display: none;">
       <h2>Gestión de Inventario</h2>
+      <p id="admin-error" class="error-msg" role="alert" aria-live="polite"></p>
       <div class="title-underline" style="margin-bottom: 2rem;"></div>
 
       <!-- Formulario para Agregar/Editar Producto -->
@@ -109,6 +110,6 @@
     </section>
   </main>
 
-  <script src="js/admin.js"></script>
+  <script type="module" src="js/admin.js"></script>
 </body>
 </html>
